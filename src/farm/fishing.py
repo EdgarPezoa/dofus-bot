@@ -1,10 +1,9 @@
+from src.utils import click, utils
 from playsound import playsound
 from pyautogui import * 
 import pyautogui 
 import time 
 import random
-from utils import click
-from utils import utils
 
 fishing_spot_image = 'src/resources/fish_spot.png'
 fishingTime = 11.2
