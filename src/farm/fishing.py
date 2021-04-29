@@ -1,10 +1,11 @@
-from src.utils import click, utils
+from src.utils import clickfn, utils, voiceSynthesizer
 from playsound import playsound
 from pyautogui import * 
 import pyautogui 
 import time 
 import random
 
+voice = voiceSynthesizer.VoiceSynthesizer()
 fishing_spot_image = 'src/resources/fish_spot.png'
 fishingTime = 11.2
 fishingMovementTime = 2
@@ -27,38 +28,29 @@ def getFishingClickSleepTime():
         maximunClickTime
     )
 
-def getFishSpot():
-    fishSpot = pyautogui.locateOnScreen(fishing_spot_image, grayscale=False, confidence=0.5)
-    if(fishSpot):
-        print("Fishing...")
-        click.mouseClick(
-            fishSpot.left + ( fishSpot.width / 2 ),
-            fishSpot.top + ( fishSpot.height / 2 )
-        )
-    else:
-        print("Nothing to fish")
-        playsound('src/resources/beep.wav')
-
 def getFishSpots():
-    fishSpots = pyautogui.locateAllOnScreen(fishing_spot_image, grayscale = False, confidence = 0.5)
+    fishSpots = list(pyautogui.locateAllOnScreen(fishing_spot_image, grayscale = False, confidence = 0.5))
     lastPos = None
     if(fishSpots):
         print("Fishing...")
+        voice.readText("Fishing")
         for spot in fishSpots:
             if(compareFishingSpots(lastPos, spot)):
                 continue;
             if(utils.pressToExit('q')):
                 break;
-            click.mouseClick(
+            clickfn.mouseClick(
                 spot.left + ( spot.width / 2 ),
                 spot.top + ( spot.height / 2 )
             )
             lastPos = spot
             time.sleep(getFishingClickSleepTime())
-        print("Fishing ended")
+    else:
+        print("Nothing to fish...")
         playsound('src/resources/beep.wav')
-        
-        
+        voice.readText("Nothing to fish")
+    time.sleep(getFishingSleepTime())
+ 
 def compareFishingSpots(first, second):
     if(first):
         return (((first.left + 1 == second.left) or (first.left + 2 == second.left)) and (first.top == second.top))
@@ -68,5 +60,4 @@ def compareFishingSpots(first, second):
 def startFishingloop():
     print("Fishing loop started...")
     while utils.pressToExit('q') == False:
-        getFishSpot()
-        time.sleep(getFishingSleepTime())
+        getFishSpots()

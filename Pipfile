@@ -10,9 +10,11 @@ pillow = "*"
 opencv-python = "*"
 keyboard = "*"
 playsound = "*"
+pyttsx3 = "*"
 
 [dev-packages]
 colorama = "*"
+pyinstaller = "*"
 
 [requires]
 python_version = "3.9"
